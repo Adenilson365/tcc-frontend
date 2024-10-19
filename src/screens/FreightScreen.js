@@ -42,87 +42,100 @@ const FreightScreen = () => {
 
       {/* Freight Form */}
       <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.title}>Cadastro de Fretes</Text>
+        <Text style={styles.title}>Lançamento de Frete</Text>
+        <Text style={styles.label}>Frete bruto</Text>
         <TextInput
           style={styles.input}
-          placeholder="Frete Bruto"
+          placeholder="Informe o valor bruto do frete"
           keyboardType="numeric"
           value={formData.gross_freight}
           onChangeText={(value) => handleInputChange('gross_freight', value)}
         />
+        <Text style={styles.label}>Frete líquido</Text>
         <TextInput
           style={styles.input}
-          placeholder="Frete Líquido"
+          placeholder="Informe o valor líquido do frete"
           keyboardType="numeric"
           value={formData.net_freight}
           onChangeText={(value) => handleInputChange('net_freight', value)}
         />
+        <Text style={styles.label}>Adiantamento</Text>
         <TextInput
           style={styles.input}
-          placeholder="Adiantamento"
+          placeholder="Informe o valor do adiantamento"
           keyboardType="numeric"
           value={formData.advance}
           onChangeText={(value) => handleInputChange('advance', value)}
         />
+        <Text style={styles.label}>Quebra</Text>
         <TextInput
           style={styles.input}
-          placeholder="Perda de Valor"
+          placeholder="Informe o valor da perda"
           keyboardType="numeric"
           value={formData.money_value_loss}
           onChangeText={(value) => handleInputChange('money_value_loss', value)}
         />
+        <Text style={styles.label}>Despesas</Text>
         <TextInput
           style={styles.input}
-          placeholder="Despesas"
+          placeholder="Informe o valor das despesas"
           keyboardType="numeric"
           value={formData.expents}
           onChangeText={(value) => handleInputChange('expents', value)}
         />
+        <Text style={styles.label}>Lucro</Text>
         <TextInput
           style={styles.input}
-          placeholder="Lucro"
+          placeholder="Informe o valor do lucro"
           keyboardType="numeric"
           value={formData.profit}
           onChangeText={(value) => handleInputChange('profit', value)}
         />
+        <Text style={styles.label}>Peso de Saída</Text>
         <TextInput
           style={styles.input}
-          placeholder="Peso de Saída"
+          placeholder="Informe o peso de saída da carga"
           keyboardType="numeric"
           value={formData.exit_weight}
           onChangeText={(value) => handleInputChange('exit_weight', value)}
         />
+        <Text style={styles.label}>Peso de Chegada</Text>
         <TextInput
           style={styles.input}
-          placeholder="Peso de Chegada"
+          placeholder="Informe o peso de chegada da carga"
           keyboardType="numeric"
           value={formData.arrival_weight}
           onChangeText={(value) => handleInputChange('arrival_weight', value)}
         />
+        <Text style={styles.label}>Origem</Text>
         <TextInput
           style={styles.input}
-          placeholder="Origem"
+          placeholder="Informe a cidade de origem"
           value={formData.origin}
           onChangeText={(value) => handleInputChange('origin', value)}
         />
+        <Text style={styles.label}>Destino</Text>
         <TextInput
           style={styles.input}
-          placeholder="Destino"
+          placeholder="Informe a cidade de destino"
           value={formData.destination}
           onChangeText={(value) => handleInputChange('destination', value)}
         />
+        <Text style={styles.label}>Adicional de Frete</Text>
         <TextInput
           style={styles.input}
-          placeholder="Valor Adicional"
+          placeholder="Informe o valor adicional aplicado"
           keyboardType="numeric"
           value={formData.additional}
           onChangeText={(value) => handleInputChange('additional', value)}
         />
+        <Text style={styles.label}>Observações</Text>
         <TextInput
-          style={styles.input}
-          placeholder="Descrição"
+          style={[styles.input, styles.descriptionInput]}
+          placeholder="(Opicional) Informe a descrição detalhada do frete"
           value={formData.description}
           onChangeText={(value) => handleInputChange('description', value)}
+          multiline
         />
 
         <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
@@ -161,7 +174,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F3F3F3',
-    //paddingTop: StatusBar.currentHeight,
   },
   header: {
     flexDirection: 'row',
@@ -176,12 +188,17 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 20,
-    alignItems: 'center',
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
+    textAlign: 'center',
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 5,
   },
   input: {
     width: '100%',
@@ -192,6 +209,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginBottom: 15,
     backgroundColor: '#fff',
+  },
+  descriptionInput: {
+    height: 150,
   },
   submitButton: {
     height: 50,

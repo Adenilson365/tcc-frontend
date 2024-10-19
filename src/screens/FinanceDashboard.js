@@ -7,11 +7,26 @@ import { FontAwesome } from '@expo/vector-icons';
 import BalanceCard from '../components/BalanceCard';
 import FreightCard from '../components/FreightCard';
 import SupplyCard from '../components/SupplyCard';
-import CategoriesCard from '../components/CategoriesCard'; // Importando o CategoriesCard
+import ExpenseCard from '../components/ExpenseCard';
+import RevenueCard from '../components/RevenueCard';
+import CategoriesCard from '../components/CategoriesCard'; 
+
 
 const FinanceDashboard = () => {
   const navigation = useNavigation();
-  const [selectedOption, setSelectedOption] = useState("Últimos fretes");
+  const [selectedOption, setSelectedOption] = useState('');
+  const options = [
+    {key: 1, option: 'Últimos fretes'}, 
+    {key: 2, option: 'Últimos abastecimentos'},
+    {key: 3, option: 'Últimas despesas'},
+    {key: 4, option: 'Últimas receitas'},
+    ];
+
+    let optionsPicker = options.map((item) => {
+      return <Picker.Item key={item.key} value={item.key} label={item.option} />;
+    });
+  
+
 
   return (
     <View style={styles.container}>
@@ -39,30 +54,48 @@ const FinanceDashboard = () => {
         <View style={styles.freightsSection}>
           <View style={styles.pickerWrapper}>
             <Picker
-              selectedValue={selectedOption}
               style={styles.picker}
-              onValueChange={(itemValue) => setSelectedOption(itemValue)}
+              selectedValue={selectedOption}
+              onValueChange={(itemValue, itemIndex) => setSelectedOption(itemValue)}
               mode="dropdown"
             >
-              <Picker.Item label="Últimos fretes" value="Últimos fretes" />
-              <Picker.Item label="Últimos abastecimentos" value="Últimos abastecimentos" />
+
+              {optionsPicker}
+             { /*<Picker.Item label="Últimos fretes" value="Últimos fretes" />
+              <Picker.Item label="Últimos abastecimentos" value="Últimos abastecimentos" />*/}
             </Picker>
           </View>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {selectedOption === "Últimos fretes" && (
+            {selectedOption === options[0].key && (
               <>
                 <FreightCard departure={37.57} arrival={37.57} tariff={120.00} grossFreight={15000.00} netFreight={12758.70} />
                 <FreightCard departure={37.57} arrival={37.57} tariff={120.00} grossFreight={15000.00} netFreight={12758.70} />
                 <FreightCard departure={37.57} arrival={37.57} tariff={120.00} grossFreight={15000.00} netFreight={12758.70} />
               </>
             )}
-            {selectedOption === "Últimos abastecimentos" && (
+            {selectedOption === options[1].key && (
               <>
                 <SupplyCard fuelQuantity={120} purchaseValue={500.00} fuelType="Diesel" invoiceNumber="154" unitPrice={7.45} nameGasStation='Posto X' />
                 <SupplyCard fuelQuantity={100} purchaseValue={450.00} fuelType="Gasolina" invoiceNumber="155" unitPrice={7.12} nameGasStation='Posto Y' />
                 <SupplyCard fuelQuantity={130} purchaseValue={520.00} fuelType="Diesel S10" invoiceNumber="156" unitPrice={7.27} nameGasStation='Posto Z'  />
               </>
             )}
+            {selectedOption === options[2].key && (
+              <>
+                <ExpenseCard purchaseValue={500} description='Manutenção' />
+                <ExpenseCard purchaseValue={200} description='Pedágio' />
+                <ExpenseCard purchaseValue={300} description='Alimentação' />
+              </>
+            )}
+            {selectedOption === options[3].key && (
+              <>
+                <RevenueCard value={1500} description='Frete' />
+                <RevenueCard value={350} description='Venda de peças' />
+                <RevenueCard value={200} description='Serviços' />
+              </>
+            )}
+  
+
           </ScrollView>
         </View>
       </View>
