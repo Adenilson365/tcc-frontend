@@ -177,13 +177,15 @@ const FinanceDashboard = () => {
 
   useFocusEffect(
     useCallback(() => {
+     setCurrentMonthIndex(new Date().getMonth());
      fetchFreights(currentMonthIndex);
      fetchCalculatorData(currentMonthIndex);
      fetchSupplies(currentMonthIndex);
      fetchRevenues(currentMonthIndex);
-      fetchExpenses(currentMonthIndex);
+     fetchExpenses(currentMonthIndex);
     }, [])
   );
+
 
   let optionsPicker = options.map((item) => {
     return <Picker.Item key={item.key} value={item.key} label={item.option} />;
