@@ -52,6 +52,9 @@ const FinanceDashboard = () => {
       const newIndex = prevIndex === 0 ? 11 : prevIndex - 1;
       fetchCalculatorData(newIndex); 
       fetchFreights(newIndex);
+      fetchSupplies(newIndex);
+      fetchRevenues(newIndex);
+      fetchExpenses(newIndex);  
       return newIndex;
     });
   };
@@ -61,6 +64,9 @@ const FinanceDashboard = () => {
       const newIndex = prevIndex === 11 ? 0 : prevIndex + 1;
       fetchCalculatorData(newIndex); 
       fetchFreights(newIndex); 
+      fetchSupplies(newIndex);
+      fetchRevenues(newIndex);
+      fetchExpenses(newIndex);
       return newIndex;
     });
   };
@@ -76,7 +82,7 @@ const FinanceDashboard = () => {
             Authorization: `Bearer ${token}`,
           },
           params: {
-            month: `2024-${monthIndex + 1}`, // Ajuste para formatar o mês adequadamente
+            month: `2024-${monthIndex + 1}`, 
           },
         });
         setCalculatorData(response.data);
@@ -171,7 +177,7 @@ const FinanceDashboard = () => {
 
   useFocusEffect(
     useCallback(() => {
-      fetchFreights(currentMonthIndex);
+     fetchFreights(currentMonthIndex);
      fetchCalculatorData(currentMonthIndex);
      fetchSupplies(currentMonthIndex);
      fetchRevenues(currentMonthIndex);
