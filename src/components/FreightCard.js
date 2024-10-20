@@ -3,12 +3,12 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Card } from 'react-native-paper';
 import { formatCurrency } from '../utils/formatcurrency';
 
-const FreightCard = ({ departure, arrival, tariff, grossFreight, netFreight }) => {
+const FreightCard = ({ departure, arrival, tariff, grossFreight, netFreight, freightId }) => {
   return (
     <Card style={styles.cardContainer}>
       <View style={styles.contentContainer}>
         <View style={styles.headerContainer}>
-          <Text style={styles.title}>Frete #154</Text>
+          <Text style={styles.title}>Frete #{freightId}</Text>
           <TouchableOpacity style={styles.button}>
             <Text style={styles.buttonText}>Ver mais</Text>
           </TouchableOpacity>

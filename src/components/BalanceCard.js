@@ -11,7 +11,7 @@ const BalanceCard = ({ balance, income, expenses }) => {
   ];
 
   const [currentMonthIndex, setCurrentMonthIndex] = useState(new Date().getMonth());
-  const [showValues, setShowValues] = useState(true);
+  const [showValues, setShowValues] = useState(false);
 
   const handlePreviousMonth = () => {
     setCurrentMonthIndex((prevIndex) => (prevIndex === 0 ? 11 : prevIndex - 1));

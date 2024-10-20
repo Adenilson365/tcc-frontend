@@ -1,14 +1,44 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; // Para navegação
+import axios from 'axios'; // Biblioteca para fazer requisições HTTP
+import apiConfig from '../config/apiConfig';
+import { Ionicons } from '@expo/vector-icons';
 
 const CadastroScreen = () => {
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [confirmarSenha, setConfirmarSenha] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   
   const navigation = useNavigation(); // Hook para navegação
+
+  const handleRegister = async () => {
+    if (senha !== confirmarSenha) {
+      Alert.alert('Erro', 'As senhas não coincidem');
+      return;
+    }
+
+    try {
+      const response = await axios.post(`${apiConfig.baseURL}/users`, {
+        name: nome,
+        email: email,
+        password: senha,
+      });
+
+      Alert.alert('Sucesso', 'Usuário cadastrado com sucesso!');
+      navigation.navigate('Login');
+    } catch (error) {
+      console.error('Erro ao cadastrar usuário:', error);
+      if (error.response && error.response.data && error.response.data.error) {
+        Alert.alert('Erro', error.response.data.error);
+      } else {
+        Alert.alert('Erro', 'Não foi possível realizar o cadastro');
+      }
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -37,23 +67,33 @@ const CadastroScreen = () => {
         autoCorrect={false}
       />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Digite uma senha"
-        value={senha}
-        onChangeText={setSenha}
-        secureTextEntry
-      />
+      <View style={styles.passwordContainer}>
+        <TextInput
+          style={styles.inputPassword}
+          placeholder="Digite uma senha"
+          value={senha}
+          onChangeText={setSenha}
+          secureTextEntry={!showPassword}
+        />
+        <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+          <Ionicons name={showPassword ? 'eye' : 'eye-off'} size={24} color="#666" />
+        </TouchableOpacity>
+      </View>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Repita a senha"
-        value={confirmarSenha}
-        onChangeText={setConfirmarSenha}
-        secureTextEntry
-      />
+      <View style={styles.passwordContainer}>
+        <TextInput
+          style={styles.inputPassword}
+          placeholder="Repita a senha"
+          value={confirmarSenha}
+          onChangeText={setConfirmarSenha}
+          secureTextEntry={!showConfirmPassword}
+        />
+        <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
+          <Ionicons name={showConfirmPassword ? 'eye' : 'eye-off'} size={24} color="#666" />
+        </TouchableOpacity>
+      </View>
 
-      <TouchableOpacity style={styles.registerButton}>
+      <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
         <Text style={styles.registerButtonText}>Cadastrar</Text>
       </TouchableOpacity>
 
@@ -100,6 +140,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginBottom: 20,
     backgroundColor: '#f7f8fc',
+  },
+  passwordContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    marginBottom: 20,
+    backgroundColor: '#f7f8fc',
+  },
+  inputPassword: {
+    flex: 1,
+    height: 50,
   },
   registerButton: {
     height: 50,

@@ -1,17 +1,82 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, StatusBar } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { FontAwesome } from '@expo/vector-icons';
-// import components
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import apiConfig from '../config/apiConfig';
+// Import components
 import BalanceCard from '../components/BalanceCard';
 import FreightCard from '../components/FreightCard';
 import SupplyCard from '../components/SupplyCard';
-
+import ExpenseCard from '../components/ExpenseCard';
+import RevenueCard from '../components/RevenueCard';
+import CategoriesCard from '../components/CategoriesCard';
 
 const FinanceDashboard = () => {
   const navigation = useNavigation();
-  const [selectedOption, setSelectedOption] = useState("Últimos fretes");
+  const [selectedOption, setSelectedOption] = useState(1);
+  const [freights, setFreights] = useState([]);
+  const [calculatorData, setCalculatorData] = useState({
+    totalExpenses: 0,
+    totalSupplies: 0,
+    totalFreights: 0,
+    totalRevenues: 0,
+    netValue: 0,
+  });
+  const options = [
+    { key: 1, option: 'Últimos fretes' },
+    { key: 2, option: 'Últimos abastecimentos' },
+    { key: 3, option: 'Últimas despesas' },
+    { key: 4, option: 'Últimas receitas' },
+  ];
+
+  // Função para buscar os dados do calculator
+  const fetchCalculatorData = async () => {
+    try {
+      const token = await AsyncStorage.getItem('@userToken');
+      if (token) {
+        const response = await axios.get(`${apiConfig.baseURL}/calculator`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setCalculatorData(response.data);
+      }
+    } catch (error) {
+      console.error('Erro ao buscar os dados do calculator:', error);
+      console.log('Detalhes do erro ao buscar calculator:', error.response);
+    }
+  };
+
+  const fetchFreights = async () => {
+    try {
+      const token = await AsyncStorage.getItem('@userToken');
+      if (token) {
+        const response = await axios.get(`${apiConfig.baseURL}/freights`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setFreights(response.data);
+      }
+    } catch (error) {
+      console.error('Erro ao buscar os fretes:', error);
+      console.log('Detalhes do erro ao buscar fretes:', error.response);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchFreights();
+     fetchCalculatorData();
+    }, [])
+  );
+
+  let optionsPicker = options.map((item) => {
+    return <Picker.Item key={item.key} value={item.key} label={item.option} />;
+  });
 
   return (
     <View style={styles.container}>
@@ -24,56 +89,65 @@ const FinanceDashboard = () => {
       </View>
 
       {/* Balance Section */}
-      <BalanceCard balance={35000.45} expenses={25000} income={15000} />
+      <BalanceCard
+        balance={calculatorData?.netValue || 0}
+        expenses={calculatorData?.totalExpenses || 0}
+        income={calculatorData?.totalReceived || 0}
+      />
 
       {/* Categories Section */}
-      <View style={styles.categoriesSection}>
-        <Text style={styles.categoriesTitle}>Categorias:</Text>
-        <View style={styles.categoryItem}>
-          <Text style={styles.categoryText}>Fretes:</Text>
-          <Text style={styles.categoryValue}>R$ 75.540,45</Text>
-        </View>
-        <View style={styles.categoryItem}>
-          <Text style={styles.categoryText}>Receitas :</Text>
-          <Text style={styles.categoryValue}>R$ 3.504,00</Text>
-        </View>
-        <View style={styles.categoryItem}>
-          <Text style={styles.categoryText}>Despesas:</Text>
-          <Text style={styles.categoryValueExpense}>R$ 4.535,00</Text>
-        </View>
-        <View style={styles.categoryItem}>
-          <Text style={styles.categoryText}>Abastecimentos:</Text>
-          <Text style={styles.categoryValueExpense}>R$ 18.750,00</Text>
-        </View>
-      </View>
+      <CategoriesCard
+          freights={calculatorData?.totalFreights || 0}
+          income={calculatorData?.totalRevenues || 0}
+          expenses={calculatorData?.totalExpenses || 0}
+          supply={calculatorData?.totalSupplies || 0}
+/>
 
       {/* Recent Freights or Supplies Section */}
       <View style={styles.freightsSectionWrapper}>
         <View style={styles.freightsSection}>
           <View style={styles.pickerWrapper}>
             <Picker
-              selectedValue={selectedOption}
               style={styles.picker}
-              onValueChange={(itemValue) => setSelectedOption(itemValue)}
+              selectedValue={selectedOption}
+              onValueChange={(itemValue, itemIndex) => setSelectedOption(itemValue)}
               mode="dropdown"
             >
-              <Picker.Item label="Últimos fretes" value="Últimos fretes" />
-              <Picker.Item label="Últimos abastecimentos" value="Últimos abastecimentos" />
+              {optionsPicker}
             </Picker>
           </View>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {selectedOption === "Últimos fretes" && (
+            {selectedOption === options[0].key &&
+              freights.map((freight) => (
+                <FreightCard
+                key={freight.id}
+                freightId={freight.id}
+                departure={freight.exit_weight || 0}
+                arrival={freight.arrival_weight || 0}
+                tariff={freight.tariff || 0}
+                grossFreight={freight.gross_freight || 0}
+                netFreight={freight.net_freight || 0}
+                />
+              ))}
+            {selectedOption === options[1].key && (
               <>
-                <FreightCard departure={37.57} arrival={37.57} tariff={120.00} grossFreight={15000.00} netFreight={12758.70} />
-                <FreightCard departure={37.57} arrival={37.57} tariff={120.00} grossFreight={15000.00} netFreight={12758.70} />
-                <FreightCard departure={37.57} arrival={37.57} tariff={120.00} grossFreight={15000.00} netFreight={12758.70} />
+                <SupplyCard fuelQuantity={120} purchaseValue={500.0} fuelType="Diesel" invoiceNumber="154" unitPrice={7.45} nameGasStation="Posto X" />
+                <SupplyCard fuelQuantity={100} purchaseValue={450.0} fuelType="Gasolina" invoiceNumber="155" unitPrice={7.12} nameGasStation="Posto Y" />
+                <SupplyCard fuelQuantity={130} purchaseValue={520.0} fuelType="Diesel S10" invoiceNumber="156" unitPrice={7.27} nameGasStation="Posto Z" />
               </>
             )}
-            {selectedOption === "Últimos abastecimentos" && (
+            {selectedOption === options[2].key && (
               <>
-                <SupplyCard fuelQuantity={120} purchaseValue={500.00} fuelType="Diesel" invoiceNumber="154" description="Posto X" />
-                <SupplyCard fuelQuantity={100} purchaseValue={450.00} fuelType="Gasolina" invoiceNumber="155" description="Posto Y" />
-                <SupplyCard fuelQuantity={130} purchaseValue={520.00} fuelType="Diesel S10" invoiceNumber="156" description="Posto Z" />
+                <ExpenseCard purchaseValue={500} description="Manutenção" />
+                <ExpenseCard purchaseValue={200} description="Pedágio" />
+                <ExpenseCard purchaseValue={300} description="Alimentação" />
+              </>
+            )}
+            {selectedOption === options[3].key && (
+              <>
+                <RevenueCard value={1500} description="Frete" />
+                <RevenueCard value={350} description="Venda de peças" />
+                <RevenueCard value={200} description="Serviços" />
               </>
             )}
           </ScrollView>
@@ -123,34 +197,6 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 20,
   },
-  categoriesSection: {
-    backgroundColor: 'white',
-    padding: 20,
-    //margin: 10,
-    marginHorizontal: 10,
-    marginTop: 10,
-    borderRadius: 10,
-    elevation: 5,
-  },
-  categoriesTitle: {
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  categoryItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  categoryText: {
-    fontSize: 16,
-  },
-  categoryValue: {
-    fontSize: 16,
-    color: 'green',
-  },
-  categoryValueExpense: {
-    fontSize: 16,
-    color: 'red',
-  },
   freightsSectionWrapper: {
     flex: 1,
   },
@@ -164,7 +210,6 @@ const styles = StyleSheet.create({
     paddingVertical: 0,
     backgroundColor: '#fff',
     marginBottom: 5,
-    //marginTop: 5,
     width: '100%',
     overflow: 'hidden',
   },

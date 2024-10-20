@@ -1,18 +1,32 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native'; // Importa o hook de navegação
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import { Ionicons } from '@expo/vector-icons';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   
-  const navigation = useNavigation(); // Hook para navegação
+  const navigation = useNavigation();
 
-  const handleLogin = () => {
-    if (email === 'Teste' && senha === 'Teste123') {
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post('http://192.168.200.101:3333/sessions', {
+        email,
+        password: senha,
+      });
+
+      const { token } = response.data;
+
+      await AsyncStorage.setItem('@userToken', token);
+
       navigation.navigate('FinanceDashboard');
-    } else {
-      alert('Nome ou senha incorretos');
+    } catch (error) {
+      console.log(error.response?.data || error.message);
+      Alert.alert('Erro de Login', 'Nome ou senha incorretos');
     }
   };
 
@@ -30,13 +44,18 @@ const LoginScreen = () => {
         autoCorrect={false}
       />
       
-      <TextInput
-        style={styles.input}
-        placeholder="Digite a senha cadastrada"
-        value={senha}
-        onChangeText={setSenha}
-        secureTextEntry
-      />
+      <View style={styles.passwordContainer}>
+        <TextInput
+          style={styles.inputPassword}
+          placeholder="Digite a senha cadastrada"
+          value={senha}
+          onChangeText={setSenha}
+          secureTextEntry={!showPassword}
+        />
+        <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+          <Ionicons name={showPassword ? 'eye' : 'eye-off'} size={24} color="#666" />
+        </TouchableOpacity>
+      </View>
 
       <TouchableOpacity>
         <Text style={styles.forgotPasswordText}>Esqueci minha senha</Text>
@@ -46,10 +65,9 @@ const LoginScreen = () => {
         <Text style={styles.loginButtonText}>Login</Text>
       </TouchableOpacity>
 
-      {/* Botão "Não tenho cadastro" redirecionando para a tela de Cadastro */}
       <TouchableOpacity 
         style={styles.registerButton} 
-        onPress={() => navigation.navigate('Cadastro')} // Navega para a tela de Cadastro
+        onPress={() => navigation.navigate('Cadastro')} 
       >
         <Text style={styles.registerButtonText}>Não tenho cadastro</Text>
       </TouchableOpacity>
@@ -78,6 +96,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginBottom: 20,
     backgroundColor: '#f7f8fc',
+  },
+  passwordContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    marginBottom: 20,
+    backgroundColor: '#f7f8fc',
+  },
+  inputPassword: {
+    flex: 1,
+    height: 50,
   },
   forgotPasswordText: {
     color: '#555',

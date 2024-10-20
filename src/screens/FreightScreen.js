@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, StatusBar } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, StatusBar, Alert } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import apiConfig from '../config/apiConfig';
 
 const FreightScreen = () => {
   const navigation = useNavigation();
@@ -19,15 +22,67 @@ const FreightScreen = () => {
     completed: false,
     additional: '',
     description: '',
+    tariff: '',
   });
 
   const handleInputChange = (name, value) => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = () => {
-    // Lógica para salvar os dados do frete
-    console.log(formData);
+  const handleSubmit = async () => {
+    try {
+      const token = await AsyncStorage.getItem('@userToken');
+      if (!token) {
+        Alert.alert('Erro', 'Usuário não autenticado. Faça login novamente.');
+        return;
+      }
+
+      // Converter campos vazios para null
+      const formattedData = {};
+      for (const key in formData) {
+        formattedData[key] = formData[key] === '' ? null : formData[key];
+      }
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const response = await axios.post(
+        `${apiConfig.baseURL}/freights`,
+        formattedData,
+        config
+      );
+
+      if (response.status === 200 || response.status === 201) {
+        Alert.alert('Sucesso', 'Frete lançado com sucesso!');
+        // Limpar os campos do formulário
+        setFormData({
+          gross_freight: '',
+          net_freight: '',
+          advance: '',
+          money_value_loss: '',
+          expents: '',
+          profit: '',
+          exit_weight: '',
+          arrival_weight: '',
+          origin: '',
+          destination: '',
+          completed: false,
+          additional: '',
+          description: '',
+          tariff: '',
+        });
+        // Navegar para a tela de lista de fretes ou outra tela relevante
+        navigation.navigate('FreightScreen');
+      } else {
+        Alert.alert('Erro', 'Não foi possível cadastrar o frete. Tente novamente.');
+      }
+    } catch (error) {
+      console.error('Erro ao cadastrar frete:', error);
+      Alert.alert('Erro', 'Ocorreu um erro ao tentar cadastrar o frete.');
+    }
   };
 
   return (
@@ -43,7 +98,7 @@ const FreightScreen = () => {
       {/* Freight Form */}
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.title}>Lançamento de Frete</Text>
-        <Text style={styles.label}>Frete bruto</Text>
+        <Text style={styles.label}>Frete bruto (obrigatório)</Text>
         <TextInput
           style={styles.input}
           placeholder="Informe o valor bruto do frete"
@@ -51,7 +106,7 @@ const FreightScreen = () => {
           value={formData.gross_freight}
           onChangeText={(value) => handleInputChange('gross_freight', value)}
         />
-        <Text style={styles.label}>Frete líquido</Text>
+        <Text style={styles.label}>Frete líquido (obrigatório)</Text>
         <TextInput
           style={styles.input}
           placeholder="Informe o valor líquido do frete"
@@ -66,6 +121,14 @@ const FreightScreen = () => {
           keyboardType="numeric"
           value={formData.advance}
           onChangeText={(value) => handleInputChange('advance', value)}
+        />
+        <Text style={styles.label}>Tarifa (obrigatório)</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Informe o valor da tarifa"
+          keyboardType="numeric"
+          value={formData.tariff}
+          onChangeText={(value) => handleInputChange('tariff', value)}
         />
         <Text style={styles.label}>Quebra</Text>
         <TextInput
@@ -91,7 +154,7 @@ const FreightScreen = () => {
           value={formData.profit}
           onChangeText={(value) => handleInputChange('profit', value)}
         />
-        <Text style={styles.label}>Peso de Saída</Text>
+        <Text style={styles.label}>Peso de Saída (obrigatório)</Text>
         <TextInput
           style={styles.input}
           placeholder="Informe o peso de saída da carga"
@@ -99,7 +162,7 @@ const FreightScreen = () => {
           value={formData.exit_weight}
           onChangeText={(value) => handleInputChange('exit_weight', value)}
         />
-        <Text style={styles.label}>Peso de Chegada</Text>
+        <Text style={styles.label}>Peso de Chegada (obrigatório)</Text>
         <TextInput
           style={styles.input}
           placeholder="Informe o peso de chegada da carga"
@@ -132,7 +195,7 @@ const FreightScreen = () => {
         <Text style={styles.label}>Observações</Text>
         <TextInput
           style={[styles.input, styles.descriptionInput]}
-          placeholder="(Opicional) Informe a descrição detalhada do frete"
+          placeholder="(Opcional) Informe a descrição detalhada do frete"
           value={formData.description}
           onChangeText={(value) => handleInputChange('description', value)}
           multiline
@@ -141,6 +204,30 @@ const FreightScreen = () => {
         <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
           <Text style={styles.submitButtonText}>Salvar Frete</Text>
         </TouchableOpacity>
+
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.cancelButton} onPress={() => navigation.navigate('FinanceDashboard')}>
+            <Text style={styles.cancelButtonText}>Cancelar</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.clearButton} onPress={() => setFormData({
+            gross_freight: '',
+            net_freight: '',
+            advance: '',
+            money_value_loss: '',
+            expents: '',
+            profit: '',
+            exit_weight: '',
+            arrival_weight: '',
+            origin: '',
+            destination: '',
+            completed: false,
+            additional: '',
+            description: '',
+            tariff: '',
+          })}>
+            <Text style={styles.clearButtonText}>Limpar</Text>
+          </TouchableOpacity>
+        </View>
       </ScrollView>
 
       {/* Bottom Navbar */}
@@ -153,24 +240,45 @@ const FreightScreen = () => {
           <FontAwesome name="truck" size={24} color="white" />
           <Text style={styles.navText}>Fretes</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
-          <FontAwesome name="tint" size={24} color="white" />
-          <Text style={styles.navText}>Diesel</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
-          <FontAwesome name="file-text" size={24} color="white" />
-          <Text style={styles.navText}>Despesa</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
-          <FontAwesome name="money" size={24} color="white" />
-          <Text style={styles.navText}>Receita</Text>
-        </TouchableOpacity>
+        {/* Outros itens de navegação */}
       </View>
     </View>
   );
 };
 
+// Estilos
 const styles = StyleSheet.create({
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 20,
+  },
+  cancelButton: {
+    flex: 0.48,
+    height: 50,
+    backgroundColor: '#df5e5b',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+  },
+  cancelButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  clearButton: {
+    flex: 0.48,
+    height: 50,
+    backgroundColor: '#e5c750',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+  },
+  clearButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
   container: {
     flex: 1,
     backgroundColor: '#F3F3F3',
@@ -194,11 +302,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
+    color: '#303e4b',
   },
   label: {
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 5,
+    color: '#303e4b',
   },
   input: {
     width: '100%',
@@ -209,9 +319,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginBottom: 15,
     backgroundColor: '#fff',
-  },
-  descriptionInput: {
-    height: 150,
   },
   submitButton: {
     height: 50,
