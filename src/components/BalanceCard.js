@@ -5,13 +5,12 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { formatCurrency } from '../utils/formatcurrency';
 
 const BalanceCard = ({ balance, income, expenses, showValues }) => {
-  const months = [
+/*   const months = [
     'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
     'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
   ];
 
   const [currentMonthIndex, setCurrentMonthIndex] = useState(new Date().getMonth());
-  //const [showValues, setShowValues] = useState(false); //Sempre que abrir o app os valores estarão ocultos
 
   const handlePreviousMonth = () => {
     setCurrentMonthIndex((prevIndex) => (prevIndex === 0 ? 11 : prevIndex - 1));
@@ -19,11 +18,11 @@ const BalanceCard = ({ balance, income, expenses, showValues }) => {
 
   const handleNextMonth = () => {
     setCurrentMonthIndex((prevIndex) => (prevIndex === 11 ? 0 : prevIndex + 1));
-  };
+  }; */
 
   return (
     <View style={styles.container}>
-      <View style={styles.headerContainer}>
+{/*       <View style={styles.headerContainer}>
         <TouchableOpacity onPress={handlePreviousMonth}>
           <Ionicons name="chevron-back" size={24} color="green" />
         </TouchableOpacity>
@@ -31,7 +30,7 @@ const BalanceCard = ({ balance, income, expenses, showValues }) => {
         <TouchableOpacity onPress={handleNextMonth}>
           <Ionicons name="chevron-forward" size={24} color="green" />
         </TouchableOpacity>
-      </View>
+      </View> */}
 
       <View style={styles.balanceContainer}>
         <Text style={styles.balanceText}>Saldo</Text>
@@ -69,6 +68,7 @@ const BalanceCard = ({ balance, income, expenses, showValues }) => {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
+    borderRadius: 10,
     marginLeft: 10,
     marginRight: 10,
     backgroundColor: '#fff',
@@ -79,17 +79,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 5,
-  },
-  headerContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  monthText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: 'green',
   },
   balanceContainer: {
     alignItems: 'center',

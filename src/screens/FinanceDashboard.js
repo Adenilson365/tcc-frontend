@@ -37,6 +37,20 @@ const FinanceDashboard = () => {
   ];
   const [showValues, setShowValues] = useState(false); //Sempre que abrir o app os valores estarão ocultos
 
+  const months = [
+    'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+    'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+  ];
+
+  const [currentMonthIndex, setCurrentMonthIndex] = useState(new Date().getMonth());
+
+  const handlePreviousMonth = () => {
+    setCurrentMonthIndex((prevIndex) => (prevIndex === 0 ? 11 : prevIndex - 1));
+  };
+
+  const handleNextMonth = () => {
+    setCurrentMonthIndex((prevIndex) => (prevIndex === 11 ? 0 : prevIndex + 1));
+  };
 
   // Função para buscar os dados do calculator
   const fetchCalculatorData = async () => {
@@ -94,6 +108,16 @@ const FinanceDashboard = () => {
         <View style={{ width: 24 }} />
         <TouchableOpacity onPress={() => setShowValues(!showValues)}  >
         <Ionicons name={showValues ? 'eye' : 'eye-off'} size={24} color="white" />
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.monthContainer}>
+        <TouchableOpacity onPress={handlePreviousMonth}>
+          <Ionicons name="chevron-back" size={24} color="green" />
+        </TouchableOpacity>
+        <Text style={styles.monthText}>{months[currentMonthIndex]}</Text>
+        <TouchableOpacity onPress={handleNextMonth}>
+          <Ionicons name="chevron-forward" size={24} color="green" />
         </TouchableOpacity>
       </View>
 
@@ -252,6 +276,25 @@ const styles = StyleSheet.create({
   btn: {
     backgroundColor: 'black',
   },
+
+  monthContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    height: 56,
+    backgroundColor: '#fff',
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    marginTop: 10,
+    marginBottom: 10,
+
+  },
+  monthText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'green',
+  },
+
 });
 
 export default FinanceDashboard;
