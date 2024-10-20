@@ -22,6 +22,9 @@ const FinanceDashboard = () => {
   const navigation = useNavigation();
   const [selectedOption, setSelectedOption] = useState(1);
   const [freights, setFreights] = useState([]);
+  const [supplies, setSupplies] = useState([]);
+  const [revenues, setRevenues] = useState([]);
+  const [expenses, setExpenses] = useState([]);
   const [calculatorData, setCalculatorData] = useState({
     totalExpenses: 0,
     totalSupplies: 0,
@@ -45,21 +48,35 @@ const FinanceDashboard = () => {
   const [currentMonthIndex, setCurrentMonthIndex] = useState(new Date().getMonth());
 
   const handlePreviousMonth = () => {
-    setCurrentMonthIndex((prevIndex) => (prevIndex === 0 ? 11 : prevIndex - 1));
+    setCurrentMonthIndex((prevIndex) => {
+      const newIndex = prevIndex === 0 ? 11 : prevIndex - 1;
+      fetchCalculatorData(newIndex); 
+      fetchFreights(newIndex);
+      return newIndex;
+    });
   };
-
+  
   const handleNextMonth = () => {
-    setCurrentMonthIndex((prevIndex) => (prevIndex === 11 ? 0 : prevIndex + 1));
+    setCurrentMonthIndex((prevIndex) => {
+      const newIndex = prevIndex === 11 ? 0 : prevIndex + 1;
+      fetchCalculatorData(newIndex); 
+      fetchFreights(newIndex); 
+      return newIndex;
+    });
   };
+  
 
   // Função para buscar os dados do calculator
-  const fetchCalculatorData = async () => {
+  const fetchCalculatorData = async (monthIndex) => {
     try {
       const token = await AsyncStorage.getItem('@userToken');
       if (token) {
         const response = await axios.get(`${apiConfig.baseURL}/calculator`, {
           headers: {
             Authorization: `Bearer ${token}`,
+          },
+          params: {
+            month: `2024-${monthIndex + 1}`, // Ajuste para formatar o mês adequadamente
           },
         });
         setCalculatorData(response.data);
@@ -69,14 +86,18 @@ const FinanceDashboard = () => {
       console.log('Detalhes do erro ao buscar calculator:', error.response);
     }
   };
-
-  const fetchFreights = async () => {
+  
+  
+  const fetchFreights = async (monthIndex) => {
     try {
       const token = await AsyncStorage.getItem('@userToken');
       if (token) {
         const response = await axios.get(`${apiConfig.baseURL}/freights`, {
           headers: {
             Authorization: `Bearer ${token}`,
+          },
+          params: {
+            month: `2024-${monthIndex + 1}`, 
           },
         });
         setFreights(response.data);
@@ -87,10 +108,74 @@ const FinanceDashboard = () => {
     }
   };
 
+  const fetchSupplies = async (monthIndex) => {
+    try {
+      const token = await AsyncStorage.getItem('@userToken');
+      if (token) {
+        const response = await axios.get(`${apiConfig.baseURL}/supplies`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          params: {
+            month: `2024-${monthIndex + 1}`,
+          },
+        });
+        setSupplies(response.data);
+      }
+    } catch (error) {
+      console.error('Erro ao buscar os abastecimentos:', error);
+      console.log('Detalhes do erro ao buscar abastecimentos:', error.response);
+    }
+  };
+
+  const fetchRevenues = async (monthIndex) => {
+    try {
+      const token = await AsyncStorage.getItem('@userToken');
+      if (token) {
+        const response = await axios.get(`${apiConfig.baseURL}/revenues`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          params: {
+            month: `2024-${monthIndex + 1}`,
+          },
+        });
+        setRevenues(response.data);
+      }
+    } catch (error) {
+      console.error('Erro ao buscar as receitas:', error);
+      console.log('Detalhes do erro ao buscar receitas:', error.response);
+    }
+  };
+  
+  const fetchExpenses = async (monthIndex) => {
+    try {
+      const token = await AsyncStorage.getItem('@userToken');
+      if (token) {
+        const response = await axios.get(`${apiConfig.baseURL}/expenses`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          params: {
+            month: `2024-${monthIndex + 1}`,
+          },
+        });
+        setExpenses(response.data);
+      }
+    } catch (error) {
+      console.error('Erro ao buscar as despesas:', error);
+      console.log('Detalhes do erro ao buscar despesas:', error.response);
+    }
+  };
+
+
   useFocusEffect(
     useCallback(() => {
-      fetchFreights();
-     fetchCalculatorData();
+      fetchFreights(currentMonthIndex);
+     fetchCalculatorData(currentMonthIndex);
+     fetchSupplies(currentMonthIndex);
+     fetchRevenues(currentMonthIndex);
+      fetchExpenses(currentMonthIndex);
     }, [])
   );
 
@@ -164,27 +249,35 @@ const FinanceDashboard = () => {
                 netFreight={freight.net_freight || 0}
                 />
               ))}
-            {selectedOption === options[1].key && (
-              <>
-                <SupplyCard fuelQuantity={120} purchaseValue={500.0} fuelType="Diesel" invoiceNumber="154" unitPrice={7.45} nameGasStation="Posto X" />
-                <SupplyCard fuelQuantity={100} purchaseValue={450.0} fuelType="Gasolina" invoiceNumber="155" unitPrice={7.12} nameGasStation="Posto Y" />
-                <SupplyCard fuelQuantity={130} purchaseValue={520.0} fuelType="Diesel S10" invoiceNumber="156" unitPrice={7.27} nameGasStation="Posto Z" />
-              </>
-            )}
-            {selectedOption === options[2].key && (
-              <>
-                <ExpenseCard purchaseValue={500} description="Manutenção" />
-                <ExpenseCard purchaseValue={200} description="Pedágio" />
-                <ExpenseCard purchaseValue={300} description="Alimentação" />
-              </>
-            )}
-            {selectedOption === options[3].key && (
-              <>
-                <RevenueCard value={1500} description="Frete" />
-                <RevenueCard value={350} description="Venda de peças" />
-                <RevenueCard value={200} description="Serviços" />
-              </>
-            )}
+            {selectedOption === options[1].key &&
+              supplies.map((supply) => (
+                <SupplyCard
+                  key={supply.id}
+                  fuelQuantity={supply.fuel_quantity || 0}
+                  purchaseValue={supply.purchase_value || 0}
+                  fuelType={supply.fuel_type || ''}
+                  invoiceNumber={supply.invoice_number || ''}
+                  unitPrice={supply.unit_price || 0}
+                  nameGasStation={supply.name_gas_station || ''}
+                />
+              ))}
+
+            {selectedOption === options[2].key &&
+              expenses.map((expense) => (
+                <ExpenseCard
+                  key={expense.id}
+                  purchaseValue={expense.purchase_value || 0}
+                  description={expense.description || ''}
+                />
+              ))}
+            {selectedOption === options[3].key &&
+              revenues.map((revenue) => (
+                <RevenueCard
+                  key={revenue.id}
+                  value={revenue.value || 0}
+                  description={revenue.description || ''}
+                />
+              ))}
           </ScrollView>
         </View>
       </View>
@@ -223,7 +316,7 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    justifyContent:  'space-between', // Alinha os elementos nos extremos
+    justifyContent:  'space-between',
     alignItems: 'center',
     backgroundColor: '#4CAF50',
     padding: 15,
@@ -233,7 +326,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 20,
     textAlign: 'center',
-    flex: 1, // Garante que o título ocupe todo o espaço disponível
+    flex: 1, 
   },
   
   freightsSectionWrapper: {
@@ -254,18 +347,18 @@ const styles = StyleSheet.create({
   },
   picker: {
     height: 45,
-    marginTop: -8, // Ajustar o alinhamento do texto no Android
+    marginTop: -8, 
   },
   bottomNavbar: {
     flexDirection: 'row',
-    justifyContent: 'space-evenly', // Distribui itens com espaçamento igual
+    justifyContent: 'space-evenly', 
     alignItems: 'center',
     backgroundColor: '#4CAF50',
     paddingVertical: 10,
   },
   navItem: {
     alignItems: 'center',
-    justifyContent: 'center', // Alinha o texto verticalmente no centro
+    justifyContent: 'center', 
     flex: 1,
   },
   navText: {
