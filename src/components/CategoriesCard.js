@@ -4,25 +4,25 @@ import { View, Text, StyleSheet } from 'react-native';
 //import utils
 import { formatCurrency } from '../utils/formatcurrency';
 
-const CategoriesCard = ({ freights, income, expenses, supply }) => {
+const CategoriesCard = ({ freights, income, expenses, supply , showValues}) => {
   return (
     <View style={styles.categoriesSection}>
       <Text style={styles.categoriesTitle}>Categorias:</Text>
       <View style={styles.categoryItem}>
         <Text style={styles.categoryText}>Fretes:</Text>
-        <Text style={styles.categoryValue}>{formatCurrency(freights)}</Text>
+        <Text style={styles.categoryValue}>{showValues ? formatCurrency(freights) : '----'}</Text>
       </View>
       <View style={styles.categoryItem}>
         <Text style={styles.categoryText}>Receitas:</Text>
-        <Text style={styles.categoryValue}>{formatCurrency(income)}</Text>
+        <Text style={styles.categoryValue}>{showValues ? formatCurrency(income) : '----'}</Text>
       </View>
       <View style={styles.categoryItem}>
         <Text style={styles.categoryText}>Despesas:</Text>
-        <Text style={styles.categoryValueExpense}> {formatCurrency(expenses)}</Text>
+        <Text style={styles.categoryValueExpense}> {showValues ? formatCurrency(expenses) : '----'}</Text>
       </View>
       <View style={styles.categoryItem}>
         <Text style={styles.categoryText}>Abastecimentos:</Text>
-        <Text style={styles.categoryValueExpense}>{formatCurrency(supply)}</Text>
+        <Text style={styles.categoryValueExpense}>{showValues ? formatCurrency(supply) : '----'}</Text>
       </View>
     </View>
   );

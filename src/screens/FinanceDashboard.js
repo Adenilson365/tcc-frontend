@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, StatusBar } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
@@ -14,6 +14,9 @@ import SupplyCard from '../components/SupplyCard';
 import ExpenseCard from '../components/ExpenseCard';
 import RevenueCard from '../components/RevenueCard';
 import CategoriesCard from '../components/CategoriesCard';
+
+
+
 
 const FinanceDashboard = () => {
   const navigation = useNavigation();
@@ -32,6 +35,8 @@ const FinanceDashboard = () => {
     { key: 3, option: 'Últimas despesas' },
     { key: 4, option: 'Últimas receitas' },
   ];
+  const [showValues, setShowValues] = useState(false); //Sempre que abrir o app os valores estarão ocultos
+
 
   // Função para buscar os dados do calculator
   const fetchCalculatorData = async () => {
@@ -87,9 +92,9 @@ const FinanceDashboard = () => {
         <FontAwesome name="bars" size={24} color="white" />
         <Text style={styles.headerTitle}>Início</Text>
         <View style={{ width: 24 }} />
-   {/*      <TouchableOpacity onPress={() => setShowValues(!showValues)} style={styles.balanceContainer}>
-        <Ionicons name={showValues ? 'eye' : 'eye-off'} size={24} color="green" />
-        </TouchableOpacity> */}
+        <TouchableOpacity onPress={() => setShowValues(!showValues)}  >
+        <Ionicons name={showValues ? 'eye' : 'eye-off'} size={24} color="white" />
+        </TouchableOpacity>
       </View>
 
       {/* Balance Section */}
@@ -97,6 +102,7 @@ const FinanceDashboard = () => {
         balance={calculatorData?.netValue || 0}
         expenses={calculatorData?.totalExpenses || 0}
         income={calculatorData?.totalReceived || 0}
+        showValues={showValues}
       />
 
       {/* Categories Section */}
@@ -105,6 +111,7 @@ const FinanceDashboard = () => {
           income={calculatorData?.totalRevenues || 0}
           expenses={calculatorData?.totalExpenses || 0}
           supply={calculatorData?.totalSupplies || 0}
+          showValues={showValues}
 />
 
       {/* Recent Freights or Supplies Section */}
@@ -192,15 +199,19 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent:  'space-between', // Alinha os elementos nos extremos
     alignItems: 'center',
     backgroundColor: '#4CAF50',
     padding: 15,
+    paddingHorizontal: 30,
   },
   headerTitle: {
     color: 'white',
     fontSize: 20,
+    textAlign: 'center',
+    flex: 1, // Garante que o título ocupe todo o espaço disponível
   },
+  
   freightsSectionWrapper: {
     flex: 1,
   },
@@ -223,16 +234,23 @@ const styles = StyleSheet.create({
   },
   bottomNavbar: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-evenly', // Distribui itens com espaçamento igual
     alignItems: 'center',
     backgroundColor: '#4CAF50',
     paddingVertical: 10,
   },
   navItem: {
     alignItems: 'center',
+    justifyContent: 'center', // Alinha o texto verticalmente no centro
+    flex: 1,
   },
   navText: {
     color: 'white',
+    fontSize: 12, 
+    textAlign: 'center', 
+  },
+  btn: {
+    backgroundColor: 'black',
   },
 });
 

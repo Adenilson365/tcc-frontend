@@ -4,14 +4,14 @@ import { Ionicons } from '@expo/vector-icons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { formatCurrency } from '../utils/formatcurrency';
 
-const BalanceCard = ({ balance, income, expenses }) => {
+const BalanceCard = ({ balance, income, expenses, showValues }) => {
   const months = [
     'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
     'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
   ];
 
   const [currentMonthIndex, setCurrentMonthIndex] = useState(new Date().getMonth());
-  const [showValues, setShowValues] = useState(false);
+  //const [showValues, setShowValues] = useState(false); //Sempre que abrir o app os valores estarão ocultos
 
   const handlePreviousMonth = () => {
     setCurrentMonthIndex((prevIndex) => (prevIndex === 0 ? 11 : prevIndex - 1));
@@ -33,11 +33,10 @@ const BalanceCard = ({ balance, income, expenses }) => {
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity onPress={() => setShowValues(!showValues)} style={styles.balanceContainer}>
-        <Ionicons name={showValues ? 'eye' : 'eye-off'} size={24} color="green" />
+      <View style={styles.balanceContainer}>
         <Text style={styles.balanceText}>Saldo</Text>
         <Text style={styles.amountText}>{showValues ? formatCurrency(balance) : '-------'}</Text>
-      </TouchableOpacity>
+      </View>
 
       <View style={styles.detailsContainer}>
         <View style={styles.itemContainer}>

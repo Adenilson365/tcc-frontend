@@ -3,7 +3,6 @@
 //Ela é responsável por exibir o logo da aplicação e redirecionar o usuário para a tela de login após 2 segundos.
 //Para isso, usa-se o hook useEffect para executar a função de redirecionamento após 2 segundos.
 
-
 import React, { useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
