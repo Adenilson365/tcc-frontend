@@ -14,9 +14,8 @@ import SupplyCard from '../components/SupplyCard';
 import ExpenseCard from '../components/ExpenseCard';
 import RevenueCard from '../components/RevenueCard';
 import CategoriesCard from '../components/CategoriesCard';
-
-
-
+// Import Utils
+import { fetchData } from '../utils/fetchData';
 
 const FinanceDashboard = () => {
   const navigation = useNavigation();
@@ -47,142 +46,34 @@ const FinanceDashboard = () => {
 
   const [currentMonthIndex, setCurrentMonthIndex] = useState(new Date().getMonth());
 
-  const handlePreviousMonth = () => {
+  const handleChangeMonth = (direction) => {
     setCurrentMonthIndex((prevIndex) => {
-      const newIndex = prevIndex === 0 ? 11 : prevIndex - 1;
-      fetchCalculatorData(newIndex); 
-      fetchFreights(newIndex);
-      fetchSupplies(newIndex);
-      fetchRevenues(newIndex);
-      fetchExpenses(newIndex);  
+      let newIndex;
+      if (direction === 'previous') {
+        newIndex = prevIndex === 0 ? 11 : prevIndex - 1;
+      } else {
+        newIndex = prevIndex === 11 ? 0 : prevIndex + 1;
+      }
+  
+      fetchData('calculator', setCalculatorData, newIndex, 2024);
+      fetchData('freights', setFreights, newIndex, 2024);
+      fetchData('supplies', setSupplies, newIndex, 2024);
+      fetchData('revenues', setRevenues, newIndex, 2024);
+      fetchData('expenses', setExpenses, newIndex, 2024);
+  
       return newIndex;
     });
-  };
-  
-  const handleNextMonth = () => {
-    setCurrentMonthIndex((prevIndex) => {
-      const newIndex = prevIndex === 11 ? 0 : prevIndex + 1;
-      fetchCalculatorData(newIndex); 
-      fetchFreights(newIndex); 
-      fetchSupplies(newIndex);
-      fetchRevenues(newIndex);
-      fetchExpenses(newIndex);
-      return newIndex;
-    });
-  };
-  
-
-  // Função para buscar os dados do calculator
-  const fetchCalculatorData = async (monthIndex) => {
-    try {
-      const token = await AsyncStorage.getItem('@userToken');
-      if (token) {
-        const response = await axios.get(`${apiConfig.baseURL}/calculator`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          params: {
-            month: `2024-${monthIndex + 1}`, 
-          },
-        });
-        setCalculatorData(response.data);
-      }
-    } catch (error) {
-      console.error('Erro ao buscar os dados do calculator:', error);
-      console.log('Detalhes do erro ao buscar calculator:', error.response);
-    }
-  };
-  
-  
-  const fetchFreights = async (monthIndex) => {
-    try {
-      const token = await AsyncStorage.getItem('@userToken');
-      if (token) {
-        const response = await axios.get(`${apiConfig.baseURL}/freights`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          params: {
-            month: `2024-${monthIndex + 1}`, 
-          },
-        });
-        setFreights(response.data);
-      }
-    } catch (error) {
-      console.error('Erro ao buscar os fretes:', error);
-      console.log('Detalhes do erro ao buscar fretes:', error.response);
-    }
-  };
-
-  const fetchSupplies = async (monthIndex) => {
-    try {
-      const token = await AsyncStorage.getItem('@userToken');
-      if (token) {
-        const response = await axios.get(`${apiConfig.baseURL}/supplies`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          params: {
-            month: `2024-${monthIndex + 1}`,
-          },
-        });
-        setSupplies(response.data);
-      }
-    } catch (error) {
-      console.error('Erro ao buscar os abastecimentos:', error);
-      console.log('Detalhes do erro ao buscar abastecimentos:', error.response);
-    }
-  };
-
-  const fetchRevenues = async (monthIndex) => {
-    try {
-      const token = await AsyncStorage.getItem('@userToken');
-      if (token) {
-        const response = await axios.get(`${apiConfig.baseURL}/revenues`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          params: {
-            month: `2024-${monthIndex + 1}`,
-          },
-        });
-        setRevenues(response.data);
-      }
-    } catch (error) {
-      console.error('Erro ao buscar as receitas:', error);
-      console.log('Detalhes do erro ao buscar receitas:', error.response);
-    }
-  };
-  
-  const fetchExpenses = async (monthIndex) => {
-    try {
-      const token = await AsyncStorage.getItem('@userToken');
-      if (token) {
-        const response = await axios.get(`${apiConfig.baseURL}/expenses`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          params: {
-            month: `2024-${monthIndex + 1}`,
-          },
-        });
-        setExpenses(response.data);
-      }
-    } catch (error) {
-      console.error('Erro ao buscar as despesas:', error);
-      console.log('Detalhes do erro ao buscar despesas:', error.response);
-    }
-  };
+  }
 
 
   useFocusEffect(
     useCallback(() => {
      setCurrentMonthIndex(new Date().getMonth());
-     fetchFreights(currentMonthIndex);
-     fetchCalculatorData(currentMonthIndex);
-     fetchSupplies(currentMonthIndex);
-     fetchRevenues(currentMonthIndex);
-     fetchExpenses(currentMonthIndex);
+     fetchData('freights', setFreights, currentMonthIndex, 2024);
+     fetchData('calculator', setCalculatorData, currentMonthIndex, 2024);
+     fetchData('supplies', setSupplies, currentMonthIndex, 2024);
+     fetchData('revenues', setRevenues, currentMonthIndex, 2024);
+     fetchData('expenses', setExpenses, currentMonthIndex, 2024); 
     }, [])
   );
 
@@ -205,11 +96,11 @@ const FinanceDashboard = () => {
       </View>
 
       <View style={styles.monthContainer}>
-        <TouchableOpacity onPress={handlePreviousMonth}>
+        <TouchableOpacity onPress={() => handleChangeMonth('previous')}>
           <Ionicons name="chevron-back" size={24} color="green" />
         </TouchableOpacity>
         <Text style={styles.monthText}>{months[currentMonthIndex]}</Text>
-        <TouchableOpacity onPress={handleNextMonth}>
+        <TouchableOpacity onPress={() => handleChangeMonth('next')}>
           <Ionicons name="chevron-forward" size={24} color="green" />
         </TouchableOpacity>
       </View>

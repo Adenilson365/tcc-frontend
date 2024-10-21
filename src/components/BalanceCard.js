@@ -1,37 +1,12 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { formatCurrency } from '../utils/formatcurrency';
 
 const BalanceCard = ({ balance, income, expenses, showValues }) => {
-/*   const months = [
-    'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
-    'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
-  ];
-
-  const [currentMonthIndex, setCurrentMonthIndex] = useState(new Date().getMonth());
-
-  const handlePreviousMonth = () => {
-    setCurrentMonthIndex((prevIndex) => (prevIndex === 0 ? 11 : prevIndex - 1));
-  };
-
-  const handleNextMonth = () => {
-    setCurrentMonthIndex((prevIndex) => (prevIndex === 11 ? 0 : prevIndex + 1));
-  }; */
 
   return (
     <View style={styles.container}>
-{/*       <View style={styles.headerContainer}>
-        <TouchableOpacity onPress={handlePreviousMonth}>
-          <Ionicons name="chevron-back" size={24} color="green" />
-        </TouchableOpacity>
-        <Text style={styles.monthText}>{months[currentMonthIndex]}</Text>
-        <TouchableOpacity onPress={handleNextMonth}>
-          <Ionicons name="chevron-forward" size={24} color="green" />
-        </TouchableOpacity>
-      </View> */}
-
       <View style={styles.balanceContainer}>
         <Text style={styles.balanceText}>Saldo</Text>
         <Text style={styles.amountText}>{showValues ? formatCurrency(balance) : '-------'}</Text>
@@ -104,24 +79,20 @@ const styles = StyleSheet.create({
   detailText: {
     fontSize: 14,
     color: 'grey',
-    //marginTop: 5,
   },
   amountDetailText: {
     fontSize: 18,
     fontWeight: 'semibold',
     color: '#3dc772',
-    //marginTop: 5,
   },
   expenseDetailText: {
     fontSize: 18,
     fontWeight: 'semibold',
     color: '#DF5e5b',
-    //marginTop: 5,
   },
   labelItem: {
     flexDirection: 'row',
     marginRight: -5,
-
   },
   itemContainer: {
     alignItems: 'center',
