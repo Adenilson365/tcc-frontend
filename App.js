@@ -8,7 +8,9 @@ import LoginScreen from './src/screens/LoginScreen';
 import CadastroScreen from './src/screens/CadastroScreen';
 import FinanceDashboard from './src/screens/FinanceDashboard';
 import FreightScreen from './src/screens/FreightScreen';
-
+import ExpenseScreen from './src/screens/ExpenseScreen';
+import RevenueScreen from './src/screens/RevenueScreen';
+import SupplyScreen from './src/screens/SupplyScreen';
 const Stack = createStackNavigator();
 
 const App = () => {
@@ -41,6 +43,22 @@ const App = () => {
           component={FreightScreen} 
           options={{ headerShown: false }} 
         />
+        <Stack.Screen 
+          name="ExpenseScreen" 
+          component={ExpenseScreen} 
+          options={{ headerShown: false }} 
+        />
+        <Stack.Screen 
+          name="RevenueScreen" 
+          component={RevenueScreen} 
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen 
+          name="SupplyScreen" 
+          component={SupplyScreen} 
+          options={{ headerShown: false }}
+        />
+
       </Stack.Navigator>
     </NavigationContainer>
   );

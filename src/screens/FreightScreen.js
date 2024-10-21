@@ -5,6 +5,8 @@ import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import apiConfig from '../config/apiConfig';
+//import styles
+import {formBtnStyles, headerStyles, navBarStyles } from '../styles/commonStyles';
 
 const FreightScreen = () => {
   const navigation = useNavigation();
@@ -89,9 +91,9 @@ const FreightScreen = () => {
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#4CAF50" />
       {/* Header */}
-      <View style={styles.header}>
+      <View style={headerStyles.header}>
         <FontAwesome name="bars" size={24} color="white" />
-        <Text style={styles.headerTitle}>Fretes</Text>
+        <Text style={headerStyles.headerTitle}>Fretes</Text>
         <View style={{ width: 24 }} />
       </View>
 
@@ -201,15 +203,15 @@ const FreightScreen = () => {
           multiline
         />
 
-        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-          <Text style={styles.submitButtonText}>Salvar Frete</Text>
+        <TouchableOpacity style={formBtnStyles.submitButton} onPress={handleSubmit}>
+          <Text style={formBtnStyles.submitButtonText}>Salvar Frete</Text>
         </TouchableOpacity>
 
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.cancelButton} onPress={() => navigation.navigate('FinanceDashboard')}>
-            <Text style={styles.cancelButtonText}>Cancelar</Text>
+          <TouchableOpacity style={formBtnStyles.cancelButton} onPress={() => navigation.navigate('FinanceDashboard')}>
+            <Text style={formBtnStyles.cancelButtonText}>Cancelar</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.clearButton} onPress={() => setFormData({
+          <TouchableOpacity style={formBtnStyles.clearButton} onPress={() => setFormData({
             gross_freight: '',
             net_freight: '',
             advance: '',
@@ -225,20 +227,20 @@ const FreightScreen = () => {
             description: '',
             tariff: '',
           })}>
-            <Text style={styles.clearButtonText}>Limpar</Text>
+            <Text style={formBtnStyles.clearButtonText}>Limpar</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
 
       {/* Bottom Navbar */}
-      <View style={styles.bottomNavbar}>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('FinanceDashboard')}>
+      <View style={navBarStyles.bottomNavbar}>
+        <TouchableOpacity style={navBarStyles.navItem} onPress={() => navigation.navigate('FinanceDashboard')}>
           <FontAwesome name="home" size={24} color="white" />
-          <Text style={styles.navText}>Início</Text>
+          <Text style={navBarStyles.navText}>Início</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('FreightScreen')}>
+        <TouchableOpacity style={navBarStyles.navItem} onPress={() => navigation.navigate('FreightScreen')}>
           <FontAwesome name="truck" size={24} color="white" />
-          <Text style={styles.navText}>Fretes</Text>
+          <Text style={navBarStyles.navText}>Fretes</Text>
         </TouchableOpacity>
         {/* Outros itens de navegação */}
       </View>
@@ -253,46 +255,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginTop: 20,
   },
-  cancelButton: {
-    flex: 0.48,
-    height: 50,
-    backgroundColor: '#df5e5b',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 10,
-  },
-  cancelButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  clearButton: {
-    flex: 0.48,
-    height: 50,
-    backgroundColor: '#e5c750',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 10,
-  },
-  clearButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
   container: {
     flex: 1,
     backgroundColor: '#F3F3F3',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#4CAF50',
-    padding: 15,
-  },
-  headerTitle: {
-    color: 'white',
-    fontSize: 20,
   },
   content: {
     padding: 20,
@@ -320,32 +285,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     backgroundColor: '#fff',
   },
-  submitButton: {
-    height: 50,
-    backgroundColor: '#28a745',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 10,
-    marginTop: 20,
-  },
-  submitButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  bottomNavbar: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    backgroundColor: '#4CAF50',
-    paddingVertical: 10,
-  },
-  navItem: {
-    alignItems: 'center',
-  },
-  navText: {
-    color: 'white',
-  },
+
 });
 
 export default FreightScreen;

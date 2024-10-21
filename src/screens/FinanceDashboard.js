@@ -14,6 +14,7 @@ import SupplyCard from '../components/SupplyCard';
 import ExpenseCard from '../components/ExpenseCard';
 import RevenueCard from '../components/RevenueCard';
 import CategoriesCard from '../components/CategoriesCard';
+
 // Import Utils
 import { fetchData } from '../utils/fetchData';
 
@@ -191,15 +192,15 @@ const FinanceDashboard = () => {
           <FontAwesome name="truck" size={24} color="white" />
           <Text style={styles.navText}>Fretes</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
+        <TouchableOpacity style={styles.navItem} onPress={()=> navigation.navigate('SupplyScreen')}>
           <FontAwesome name="tint" size={24} color="white" />
           <Text style={styles.navText}>Diesel</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ExpenseScreen')}>
           <FontAwesome name="file-text" size={24} color="white" />
           <Text style={styles.navText}>Despesa</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
+        <TouchableOpacity style={styles.navItem} onPress={()=> navigation.navigate('RevenueScreen')}>
           <FontAwesome name="money" size={24} color="white" />
           <Text style={styles.navText}>Receita</Text>
         </TouchableOpacity>
