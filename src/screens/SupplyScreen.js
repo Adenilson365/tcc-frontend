@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, StatusBar, Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { FontAwesome } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AuthContext } from '../contexts/AuthContext';
 //import config 
 import apiConfig from '../config/apiConfig';
 //styles
@@ -26,7 +26,7 @@ const SupplyScreen = () => {
 
   const handleSubmit = async () => {
     try {
-      const token = await AsyncStorage.getItem('@userToken');
+      const { token } = useContext(AuthContext);
       if (!token) {
         Alert.alert('Erro', 'Usuário não autenticado. Faça login novamente.');
         return;

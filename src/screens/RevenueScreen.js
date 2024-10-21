@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, StatusBar, Alert } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AuthContext } from '../contexts/AuthContext';
 import apiConfig from '../config/apiConfig';
 //import styles
 import {formBtnStyles, headerStyles, navBarStyles } from '../styles/commonStyles';
@@ -21,7 +21,7 @@ const RevenueScreen = () => {
 
   const handleSubmit = async () => {
     try {
-      const token = await AsyncStorage.getItem('@userToken');
+      const { token } = useContext(AuthContext);
       if (!token) {
         Alert.alert('Erro', 'Usuário não autenticado. Faça login novamente.');
         return;

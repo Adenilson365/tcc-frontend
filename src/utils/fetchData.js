@@ -1,10 +1,11 @@
 import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useContext } from 'react';
 import apiConfig from '../config/apiConfig';
+import AuthProvider from '../config/auth';
 
 export const fetchData = async (endpoint, setDataFunction, monthIndex, year) => {
     try {
-      const token = await AsyncStorage.getItem('@userToken');
+      const { token } = useContext(AuthProvider);
       if (token) {
         const response = await axios.get(`${apiConfig.baseURL}/${endpoint}`, {
           headers: {

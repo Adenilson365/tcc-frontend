@@ -1,7 +1,8 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-
+//import AuthProvider 
+import AuthProvider from './src/config/auth';
 // Import das telas
 import SplashScreen from './src/screens/SplashScreen';
 import LoginScreen from './src/screens/LoginScreen';
@@ -11,11 +12,19 @@ import FreightScreen from './src/screens/FreightScreen';
 import ExpenseScreen from './src/screens/ExpenseScreen';
 import RevenueScreen from './src/screens/RevenueScreen';
 import SupplyScreen from './src/screens/SupplyScreen';
+
+
+
+
 const Stack = createStackNavigator();
 
 const App = () => {
   return (
     <NavigationContainer>
+      {/* AuthProvider vai ser responsavel por disponibilizar o token de forma blobal dentro
+      do app.
+      */}
+      <AuthProvider>
       <Stack.Navigator initialRouteName="Splash">
         {/* Aqui são chamadas todas as telas do app, quando usarmos o Navigator, é através do nome que o fluxo de navegação acontecerá*/}
         <Stack.Screen 
@@ -60,6 +69,7 @@ const App = () => {
         />
 
       </Stack.Navigator>
+      </AuthProvider>
     </NavigationContainer>
   );
 };

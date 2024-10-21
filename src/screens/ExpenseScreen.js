@@ -3,8 +3,8 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Status
 import { FontAwesome } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import apiConfig from '../config/apiConfig';
+import { AuthContext } from '../contexts/AuthContext';
 //import styles
 import {formBtnStyles, headerStyles, navBarStyles } from '../styles/commonStyles';
 
@@ -19,32 +19,31 @@ const ExpenseScreen = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (formData, setFormData) => {
+    const { token } = useContext(AuthContext);
+  
     try {
-      const token = await AsyncStorage.getItem('@userToken');
       if (!token) {
         Alert.alert('Erro', 'Usuário não autenticado. Faça login novamente.');
         return;
       }
-
-      // Converter campos vazios para null
       const formattedData = {};
       for (const key in formData) {
         formattedData[key] = formData[key] === '' ? null : formData[key];
       }
-
+  
       const config = {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       };
-
+  
       const response = await axios.post(
         `${apiConfig.baseURL}/expenses`,
         formattedData,
         config
       );
-
+  
       if (response.status === 200 || response.status === 201) {
         Alert.alert('Sucesso', 'Despesa lançada com sucesso!');
         // Limpar os campos do formulário
@@ -59,8 +58,7 @@ const ExpenseScreen = () => {
       console.error('Erro ao cadastrar despesa:', error);
       Alert.alert('Erro', 'Ocorreu um erro ao tentar cadastrar a despesa.');
     }
-  };
-
+    };
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#4CAF50" />
