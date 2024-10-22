@@ -1,11 +1,10 @@
 import axios from 'axios';
 import { useContext } from 'react';
 import apiConfig from '../config/apiConfig';
-import AuthProvider from '../config/auth';
+import {AuthContext} from '../config/auth';
 
-export const fetchData = async (endpoint, setDataFunction, monthIndex, year) => {
+export const fetchData = async (endpoint, setDataFunction, monthIndex, year, token) => {
     try {
-      const { token } = useContext(AuthProvider);
       if (token) {
         const response = await axios.get(`${apiConfig.baseURL}/${endpoint}`, {
           headers: {

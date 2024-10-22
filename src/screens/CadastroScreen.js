@@ -75,9 +75,7 @@ const CadastroScreen = () => {
           onChangeText={setSenha}
           secureTextEntry={!showPassword}
         />
-        <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-          <Ionicons name={showPassword ? 'eye' : 'eye-off'} size={24} color="#666" />
-        </TouchableOpacity>
+
       </View>
 
       <View style={styles.passwordContainer}>
@@ -111,15 +109,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#fff',
   },
-  backButton: {
-    position: 'absolute',
-    top: 20,
-    left: 20,
-  },
-  backButtonText: {
-    fontSize: 24,
-    color: '#28a745',
-  },
+
   title: {
     fontSize: 24,
     fontWeight: 'bold',

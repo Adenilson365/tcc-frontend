@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { Ionicons } from '@expo/vector-icons';
+import { AuthContext } from '../config/auth';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  
+  const { setToken } = useContext(AuthContext);
   const navigation = useNavigation();
 
   const handleLogin = async () => {
@@ -20,10 +21,10 @@ const LoginScreen = () => {
       });
 
       const { token } = response.data;
-
       await AsyncStorage.setItem('@userToken', token);
-
+      setToken(token);
       navigation.navigate('FinanceDashboard');
+
     } catch (error) {
       console.log(error.response?.data || error.message);
       Alert.alert('Erro de Login', 'Nome ou senha incorretos');

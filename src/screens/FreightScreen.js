@@ -3,12 +3,13 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Status
 import { FontAwesome } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
-import { AuthContext } from '../contexts/AuthContext';
+import { AuthContext } from '../config/auth';
 import apiConfig from '../config/apiConfig';
 //import styles
 import {formBtnStyles, headerStyles, navBarStyles } from '../styles/commonStyles';
 
 const FreightScreen = () => {
+  const { token } = useContext(AuthContext);
   const navigation = useNavigation();
   const [formData, setFormData] = useState({
     gross_freight: '',
@@ -33,7 +34,6 @@ const FreightScreen = () => {
 
   const handleSubmit = async () => {
     try {
-      const { token } = useContext(AuthContext);
       if (!token) {
         Alert.alert('Erro', 'Usuário não autenticado. Faça login novamente.');
         return;

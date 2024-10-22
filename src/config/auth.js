@@ -9,10 +9,13 @@ function AuthProvider({children}) {
 
     async function getToken() {
         const token = await AsyncStorage.getItem('@userToken');
+        console.log(token);
         setToken(token);
+       
     }
     useEffect(() => {
         getToken();
+        console.log(token);
     }, []);
 
   return (

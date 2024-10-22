@@ -1,13 +1,12 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo , useContext} from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, StatusBar } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { FontAwesome } from '@expo/vector-icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
-import apiConfig from '../config/apiConfig';
 import { Ionicons } from '@expo/vector-icons';
+
 // Import components
+import {AuthContext} from '../config/auth';
 import BalanceCard from '../components/BalanceCard';
 import FreightCard from '../components/FreightCard';
 import SupplyCard from '../components/SupplyCard';
@@ -19,6 +18,7 @@ import CategoriesCard from '../components/CategoriesCard';
 import { fetchData } from '../utils/fetchData';
 
 const FinanceDashboard = () => {
+  const { token } = useContext(AuthContext);
   const navigation = useNavigation();
   const [selectedOption, setSelectedOption] = useState(1);
   const [freights, setFreights] = useState([]);
@@ -56,11 +56,11 @@ const FinanceDashboard = () => {
         newIndex = prevIndex === 11 ? 0 : prevIndex + 1;
       }
   
-      fetchData('calculator', setCalculatorData, newIndex, 2024);
-      fetchData('freights', setFreights, newIndex, 2024);
-      fetchData('supplies', setSupplies, newIndex, 2024);
-      fetchData('revenues', setRevenues, newIndex, 2024);
-      fetchData('expenses', setExpenses, newIndex, 2024);
+      fetchData('calculator', setCalculatorData, newIndex, 2024, token);
+      fetchData('freights', setFreights, newIndex, 2024,token);
+      fetchData('supplies', setSupplies, newIndex, 2024, token);
+      fetchData('revenues', setRevenues, newIndex, 2024,token);
+      fetchData('expenses', setExpenses, newIndex, 2024, token);
   
       return newIndex;
     });
@@ -70,11 +70,11 @@ const FinanceDashboard = () => {
   useFocusEffect(
     useCallback(() => {
      setCurrentMonthIndex(new Date().getMonth());
-     fetchData('freights', setFreights, currentMonthIndex, 2024);
-     fetchData('calculator', setCalculatorData, currentMonthIndex, 2024);
-     fetchData('supplies', setSupplies, currentMonthIndex, 2024);
-     fetchData('revenues', setRevenues, currentMonthIndex, 2024);
-     fetchData('expenses', setExpenses, currentMonthIndex, 2024); 
+     fetchData('freights', setFreights, currentMonthIndex, 2024, token);
+     fetchData('calculator', setCalculatorData, currentMonthIndex, 2024,token);
+     fetchData('supplies', setSupplies, currentMonthIndex, 2024, token);
+     fetchData('revenues', setRevenues, currentMonthIndex, 2024,token);
+     fetchData('expenses', setExpenses, currentMonthIndex, 2024,token); 
     }, [])
   );
 
@@ -109,7 +109,7 @@ const FinanceDashboard = () => {
       {/* Balance Section */}
       <BalanceCard
         balance={calculatorData?.netValue || 0}
-        expenses={calculatorData?.totalExpenses || 0}
+        expenses={(calculatorData?.totalExpenses + calculatorData?.totalSupplies) || 0}
         income={calculatorData?.totalReceived || 0}
         showValues={showValues}
       />

@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, StatusBar, Alert } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import apiConfig from '../config/apiConfig';
-import { AuthContext } from '../contexts/AuthContext';
+import { AuthContext } from '../config/auth';
 //import styles
 import {formBtnStyles, headerStyles, navBarStyles } from '../styles/commonStyles';
 
 const ExpenseScreen = () => {
+  const { token } = useContext(AuthContext);
   const navigation = useNavigation();
   const [formData, setFormData] = useState({
     purchase_value: '',
@@ -19,9 +20,7 @@ const ExpenseScreen = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = async (formData, setFormData) => {
-    const { token } = useContext(AuthContext);
-  
+  const handleSubmit = async () => {
     try {
       if (!token) {
         Alert.alert('Erro', 'Usuário não autenticado. Faça login novamente.');
