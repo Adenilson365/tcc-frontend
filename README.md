@@ -2,7 +2,7 @@
 
 - [React Navigation - Navegação App](https://reactnavigation.org/)
   - [React Reanimated - Drawer](https://docs.swmansion.com/react-native-reanimated/)
-
+- [Icones](https://icons.expo.fyi/Index)
 ### Diagrama conceitual
 ![Diagrama Conceitual](./docs-assets/diagrama-conceitual.png)
 

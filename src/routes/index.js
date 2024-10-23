@@ -1,8 +1,8 @@
-//Import das Bibliotecas
 import 'react-native-gesture-handler';
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+
+import DrawerRoutes from './drawer.routes';
 
 // Import das telas
 import SplashScreen from '../screens/SplashScreen';
@@ -18,7 +18,6 @@ const Stack = createStackNavigator();
 
 const AppRoutes = () => {
   return (
-    <NavigationContainer>
       <Stack.Navigator initialRouteName="Splash">
         <Stack.Screen 
           name="Splash" 
@@ -37,7 +36,7 @@ const AppRoutes = () => {
         />
         <Stack.Screen 
           name="FinanceDashboard" 
-          component={FinanceDashboard} 
+          component={DrawerRoutes} 
           options={{ headerShown: false }} 
         />
         <Stack.Screen 
@@ -61,7 +60,7 @@ const AppRoutes = () => {
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
-    </NavigationContainer>
+
   );
 };
 

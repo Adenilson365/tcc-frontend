@@ -88,7 +88,9 @@ const FinanceDashboard = () => {
       <StatusBar barStyle="light-content" backgroundColor="#4CAF50" />
       {/* Header */}
       <View style={styles.header}>
-        <FontAwesome name="bars" size={24} color="white" />
+      <TouchableOpacity onPress={() => navigation.openDrawer()}>
+          <FontAwesome name="bars" size={24} color="white" />
+        </TouchableOpacity>
         <Text style={styles.headerTitle}>Início</Text>
         <View style={{ width: 24 }} />
         <TouchableOpacity onPress={() => setShowValues(!showValues)}  >

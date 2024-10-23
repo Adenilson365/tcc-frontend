@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, StatusBar, Alert } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
+import AntDesign from '@expo/vector-icons/AntDesign';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import { AuthContext } from '../config/auth';
@@ -92,7 +93,9 @@ const FreightScreen = () => {
       <StatusBar barStyle="light-content" backgroundColor="#4CAF50" />
       {/* Header */}
       <View style={headerStyles.header}>
-        <FontAwesome name="bars" size={24} color="white" />
+      <TouchableOpacity onPress={() => navigation.navigate('FinanceDashboard')}>
+        <AntDesign name="arrowleft" size={24} color="white" />
+        </TouchableOpacity>
         <Text style={headerStyles.headerTitle}>Fretes</Text>
         <View style={{ width: 24 }} />
       </View>
