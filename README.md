@@ -1,5 +1,8 @@
 ### Documentação
 
+- [React Navigation - Navegação App](https://reactnavigation.org/)
+  - [React Reanimated - Drawer](https://docs.swmansion.com/react-native-reanimated/)
+
 ### Diagrama conceitual
 ![Diagrama Conceitual](./docs-assets/diagrama-conceitual.png)
 

@@ -41,12 +41,7 @@ const CadastroScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      {/* Ícone de Voltar */}
-      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-        <Text style={styles.backButtonText}>{'<'}</Text> 
-      </TouchableOpacity>
-      
+    <View style={styles.container}>      
       <Text style={styles.title}>Cadastro</Text>
       <Text style={styles.subtitle}>Informe seus dados</Text>
 
@@ -74,7 +69,11 @@ const CadastroScreen = () => {
           value={senha}
           onChangeText={setSenha}
           secureTextEntry={!showPassword}
+
         />
+                <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+          <Ionicons name={showPassword ? 'eye' : 'eye-off'} size={24} color="#666" />
+        </TouchableOpacity>
 
       </View>
 
