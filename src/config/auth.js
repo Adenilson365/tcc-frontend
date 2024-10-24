@@ -2,16 +2,24 @@ import { createContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import apiConfig from "../config/apiConfig";
+import { useNavigation } from "@react-navigation/native";
 
 export const AuthContext = createContext({});
 
-function AuthProvider({ children }) {
+function AuthProvider({ children, navigation }) {
   const [token, setToken] = useState(null);
   const [user, setUser] = useState(null);
 
+
   async function getToken() {
-    const storedToken = await AsyncStorage.getItem('@userToken');
-    setToken(storedToken);
+    try {
+      const storedToken = await AsyncStorage.getItem('@userToken');
+      if (storedToken) {
+        setToken(storedToken);
+      }
+    } catch (error) {
+      console.error('Erro ao obter o token:', error);
+    }
   }
 
   async function getUserInfo() {
@@ -26,24 +34,34 @@ function AuthProvider({ children }) {
       setUser(response.data);
     } catch (error) {
       console.error('Erro ao buscar informações do usuário:', error);
-      console.log('Detalhes do erro ao buscar informações do usuário:', error.response);
+      if (error.response) {
+        console.log('Detalhes do erro ao buscar informações do usuário:', error.response);
+      }
+    }
+  }
+
+  async function logout() {
+    try {
+      await AsyncStorage.removeItem('@userToken');
+      setToken(null);
+      setUser(null);
+    } catch (error) {
+      console.error('Erro ao fazer logout:', error);
     }
   }
 
   useEffect(() => {
     getToken();
-    console.log(token);
   }, []);
 
   useEffect(() => {
     if (token) {
       getUserInfo();
-      console.log(user);
     }
   }, [token]);
 
   return (
-    <AuthContext.Provider value={{ token, setToken, getToken, user }}>
+    <AuthContext.Provider value={{ signed: !!user, token, setToken, getToken, user, logout }}>
       {children}
     </AuthContext.Provider>
   );

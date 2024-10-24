@@ -23,7 +23,7 @@ const LoginScreen = () => {
       const { token } = response.data;
       await AsyncStorage.setItem('@userToken', token);
       setToken(token);
-      navigation.navigate('FinanceDashboard');
+      navigation.navigate('FinaceDashboard');
 
     } catch (error) {
       console.log(error.response?.data || error.message);
