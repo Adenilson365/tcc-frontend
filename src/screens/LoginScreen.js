@@ -10,7 +10,7 @@ const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const { setToken } = useContext(AuthContext);
+  const { setToken, signed } = useContext(AuthContext);
   const navigation = useNavigation();
 
   const handleLogin = async () => {
@@ -23,7 +23,9 @@ const LoginScreen = () => {
       const { token } = response.data;
       await AsyncStorage.setItem('@userToken', token);
       setToken(token);
-      navigation.navigate('FinaceDashboard');
+      if(signed){
+      navigation.navigate('FinanceDashboard');
+      }
 
     } catch (error) {
       console.log(error.response?.data || error.message);

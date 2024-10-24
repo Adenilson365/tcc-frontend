@@ -61,7 +61,7 @@ function AuthProvider({ children, navigation }) {
   }, [token]);
 
   return (
-    <AuthContext.Provider value={{ signed: !!user, token, setToken, getToken, user, logout }}>
+    <AuthContext.Provider value={{ signed: !!user, token, setToken, getToken, user, logout, getUserInfo }}>
       {children}
     </AuthContext.Provider>
   );

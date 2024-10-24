@@ -13,6 +13,7 @@ import AuthRoutes from './auth.routes';
 const Routes = () => {
   const Stack = createStackNavigator();
   const { signed } = useContext(AuthContext);
+  console.log(signed);
   return (
     signed ? <AppRoutes /> : <AuthRoutes />
   );

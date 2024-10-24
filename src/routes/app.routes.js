@@ -5,14 +5,11 @@ import { createStackNavigator } from '@react-navigation/stack';
 import DrawerRoutes from './drawer.routes';
 
 // Import das telas
-import SplashScreen from '../screens/SplashScreen';
-import LoginScreen from '../screens/LoginScreen';
-import CadastroScreen from '../screens/CadastroScreen';
-import FinanceDashboard from '../screens/FinanceDashboard';
 import FreightScreen from '../screens/FreightScreen';
 import ExpenseScreen from '../screens/ExpenseScreen';
 import RevenueScreen from '../screens/RevenueScreen';
 import SupplyScreen from '../screens/SupplyScreen';
+import FinanceDashboard from '../screens/FinanceDashboard';
 
 const Stack = createStackNavigator();
 
