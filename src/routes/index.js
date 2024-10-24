@@ -35,11 +35,6 @@ const AppRoutes = () => {
           options={{ headerShown: false }} 
         />
         <Stack.Screen 
-          name="FinanceDashboard" 
-          component={DrawerRoutes} 
-          options={{ headerShown: false }} 
-        />
-        <Stack.Screen 
           name="FreightScreen" 
           component={FreightScreen} 
           options={{ headerShown: false }} 
@@ -59,8 +54,12 @@ const AppRoutes = () => {
           component={SupplyScreen} 
           options={{ headerShown: false }}
         />
+          <Stack.Screen 
+          name="FinanceDashboard" 
+          component={DrawerRoutes} 
+          options={{ headerShown: false }} 
+        />
       </Stack.Navigator>
-
   );
 };
 

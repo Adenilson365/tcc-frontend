@@ -1,9 +1,8 @@
 import React from "react";
 import { createDrawerNavigator } from "@react-navigation/drawer";
-
 //import screens
 import FinanceDashboard from "../screens/FinanceDashboard";
-
+import UserInfoScreen from "../screens/UserInforScreen";
 
 const Drawer = createDrawerNavigator();
 
@@ -21,6 +20,7 @@ export default function DrawerRoutes() {
     }}
     >
       <Drawer.Screen name="Home" component={FinanceDashboard} />
+      <Drawer.Screen name="Perfil" component={UserInfoScreen} />
 
     </Drawer.Navigator>
   );
